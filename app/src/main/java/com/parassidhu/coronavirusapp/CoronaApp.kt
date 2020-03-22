@@ -1,21 +1,14 @@
 package com.parassidhu.coronavirusapp
 
 import android.app.Application
-import com.facebook.flipper.android.AndroidFlipperClient
-import com.facebook.flipper.android.utils.FlipperUtils
-import com.facebook.flipper.plugins.inspector.DescriptorMapping
-import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
-import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
-import com.facebook.soloader.SoLoader
 import com.parassidhu.coronavirusapp.di.ApplicationComponent
 import com.parassidhu.coronavirusapp.di.ApplicationModule
 import com.parassidhu.coronavirusapp.di.DaggerApplicationComponent
-import javax.inject.Inject
 
 class CoronaApp: Application() {
 
-    @Inject
-    lateinit var networkFlipperPlugin: NetworkFlipperPlugin
+   /* @Inject
+    lateinit var networkFlipperPlugin: NetworkFlipperPlugin*/
 
     override fun onCreate() {
         super.onCreate()
@@ -32,7 +25,7 @@ class CoronaApp: Application() {
     }
 
     private fun initFlipper() {
-        SoLoader.init(this, false)
+        /*SoLoader.init(this, false)
 
         if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
             val client = AndroidFlipperClient.getInstance(this).apply {
@@ -41,7 +34,7 @@ class CoronaApp: Application() {
                 addPlugin(networkFlipperPlugin)
                 start()
             }
-        }
+        }*/
     }
 
     companion object {

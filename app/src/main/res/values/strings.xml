@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Coronavirus App</string>
+    <string name="app_name">Corona Tracker</string>
     <string name="confirmed">Confirmed</string>
     <string name="death">Death</string>
     <string name="recovered">Recovered</string>

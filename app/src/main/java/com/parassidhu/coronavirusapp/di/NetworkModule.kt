@@ -2,8 +2,6 @@ package com.parassidhu.coronavirusapp.di
 
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
-import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 import dagger.Module
 import dagger.Provides
 import okhttp3.*
@@ -34,8 +32,7 @@ class NetworkModule {
     @Singleton
     fun getOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        headerInterceptor: Interceptor,
-        networkFlipperPlugin: NetworkFlipperPlugin
+        headerInterceptor: Interceptor
     ): OkHttpClient {
 
         val httpBuilder = OkHttpClient.Builder()
@@ -43,7 +40,7 @@ class NetworkModule {
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(50, TimeUnit.SECONDS)
-            .addNetworkInterceptor(FlipperOkhttpInterceptor(networkFlipperPlugin))
+            //.addNetworkInterceptor(FlipperOkhttpInterceptor(networkFlipperPlugin))
 
         if (BuildConfig.DEBUG)
             httpBuilder.addInterceptor(loggingInterceptor)
@@ -52,7 +49,6 @@ class NetworkModule {
             .build()
 
     }
-
 
     @Provides
     @Singleton
@@ -85,11 +81,11 @@ class NetworkModule {
         return retrofit.create(ApiClient::class.java)
     }
 
-    @Provides
+    /*@Provides
     @Singleton
     fun getNetworkFlipperPlugin(): NetworkFlipperPlugin {
         return NetworkFlipperPlugin()
-    }
+    }*/
 
     @Provides
     @Singleton

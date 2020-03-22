@@ -92,11 +92,11 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     // Flipper Interceptor
-    debugImplementation 'com.facebook.flipper:flipper:0.34.0'
-    debugImplementation 'com.facebook.soloader:soloader:0.8.2'
-    releaseImplementation 'com.facebook.flipper:flipper-noop:0.33.1'
-    debugImplementation 'com.facebook.flipper:flipper-network-plugin:0.34.0'
-
+    /*implementation 'com.facebook.flipper:flipper:0.34.0'
+    implementation 'com.facebook.soloader:soloader:0.8.2'
+    implementation 'com.facebook.flipper:flipper-noop:0.33.1'
+    implementation 'com.facebook.flipper:flipper-network-plugin:0.34.0'
+*/
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
