@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Coronavirus App</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="death">Death</string>
+    <string name="recovered">Recovered</string>
+    <string name="stat_heading">Today’s World Statistics</string>
+    <string name="search_country">Search Country</string>
+    <string name="dev">Paras Sidhu\n Android Engineer</string>
+    <string name="ux">Pratik Kohli\n UX Designer</string>
+    <string name="list_heading">Countries Affected</string>
+    <string name="network_error_message">Please check your internet connection and try again!</string>
+    <string name="disclaimer">This is not an official app and the data may vary depending upon the API. For exact numbers, you should rely on a government source.</string>
+    <string name="new_cases">New Cases</string>
+</resources>
