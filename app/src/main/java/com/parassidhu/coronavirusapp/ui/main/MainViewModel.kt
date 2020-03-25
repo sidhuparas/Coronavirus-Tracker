@@ -14,6 +14,13 @@ class MainViewModel @Inject constructor(
     private val repo: MainRepo
 ): ViewModel() {
 
+    init {
+        viewModelScope.launch {
+            getCountryWiseCases()
+            getWorldStats()
+        }
+    }
+
     fun getCountryWiseCases() {
         viewModelScope.launch {
             val response = repo.getCountryWiseCases()
