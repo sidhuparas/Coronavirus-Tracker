@@ -24,6 +24,7 @@ android {
     buildTypes {
         release {
             buildConfigField("String", "BASE_URL", "\"https://coronavirus-monitor.p.rapidapi.com/\"")
+            buildConfigField("String", "API_KEY", RAPID_API_KEY)
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -32,6 +33,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "debug"
             buildConfigField("String", "BASE_URL", "\"https://coronavirus-monitor.p.rapidapi.com/\"")
+            buildConfigField("String", "API_KEY", RAPID_API_KEY)
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
