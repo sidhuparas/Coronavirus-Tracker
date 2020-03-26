@@ -66,7 +66,6 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
 
     private fun init() {
         showLoading(true)
-        makeApiCalls()
         setupObservers()
         setupRecyclerView()
         setListeners()
