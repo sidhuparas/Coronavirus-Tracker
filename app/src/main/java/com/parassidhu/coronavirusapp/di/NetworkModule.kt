@@ -2,6 +2,9 @@ package com.parassidhu.coronavirusapp.di
 
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import dagger.Module
 import dagger.Provides
 import okhttp3.*
@@ -97,4 +100,9 @@ class NetworkModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun getFirebaseRemoteConfig(): FirebaseRemoteConfig {
+        return Firebase.remoteConfig
+    }
 }

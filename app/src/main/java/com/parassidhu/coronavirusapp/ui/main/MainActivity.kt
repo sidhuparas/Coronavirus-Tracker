@@ -37,21 +37,17 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
 
     private fun setupObservers() {
         viewModel.countryWiseCasesResponse.observe(this) { list ->
-            if (list != null) {
-                listAdapter.addData(list)
-            } else { // Network Error
-                toast(getString(R.string.network_error_message))
-            }
-
+            listAdapter.addData(list)
             showLoading(false)
         }
 
         viewModel.worldStats.observe(this) { response ->
-            if (response != null) {
-                setupWorldStats(response)
-            } else {
-                toast(getString(R.string.network_error_message))
-            }
+            setupWorldStats(response)
+        }
+
+        viewModel.errorLiveData.observe(this) { error ->
+            if (error != null)
+                toast(error)
         }
     }
 

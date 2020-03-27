@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.get
 import com.parassidhu.coronavirusapp.network.response.CountryStat
 import com.parassidhu.coronavirusapp.network.response.WorldStats
 import com.parassidhu.coronavirusapp.util.NetworkResult
@@ -11,7 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    private val repo: MainRepo
+    private val repo: MainRepo,
+    private val remoteConfig: FirebaseRemoteConfig
 ): ViewModel() {
 
     init {
@@ -20,6 +23,18 @@ class MainViewModel @Inject constructor(
             getWorldStats()
         }
     }
+
+    private val _countryWiseCasesResponse = MutableLiveData<List<CountryStat>>()
+    val countryWiseCasesResponse: LiveData<List<CountryStat>>
+        get() = _countryWiseCasesResponse
+
+    private val _worldStats = MutableLiveData<WorldStats>()
+    val worldStats: LiveData<WorldStats>
+        get() = _worldStats
+
+    private val _errorLiveData = MutableLiveData<String?>()
+    val errorLiveData: LiveData<String?>
+        get() = _errorLiveData
 
     fun getCountryWiseCases() {
         viewModelScope.launch {
@@ -32,7 +47,8 @@ class MainViewModel @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    _countryWiseCasesResponse.value = null
+                    val data = response.exception
+                    _errorLiveData.value = data
                 }
             }
         }
@@ -49,17 +65,20 @@ class MainViewModel @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    _worldStats.value = null
+                    val data = response.exception
+                    _errorLiveData.value = data
                 }
             }
         }
     }
 
-    private val _countryWiseCasesResponse = MutableLiveData<List<CountryStat>?>()
-    val countryWiseCasesResponse: LiveData<List<CountryStat>?>
-        get() = _countryWiseCasesResponse
+    fun getBanners() {
+        viewModelScope.launch {
+            remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
+                if (task.isComplete) {
 
-    private val _worldStats = MutableLiveData<WorldStats?>()
-    val worldStats: LiveData<WorldStats?>
-        get() = _worldStats
+                }
+            }
+        }
+    }
 }
