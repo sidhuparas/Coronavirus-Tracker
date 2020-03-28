@@ -6,13 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
-import com.parassidhu.coronavirusapp.network.response.BannerResponse
-import com.parassidhu.coronavirusapp.network.response.BannerResult
-import com.parassidhu.coronavirusapp.network.response.CountryStat
-import com.parassidhu.coronavirusapp.network.response.WorldStats
-import com.parassidhu.coronavirusapp.util.Constants
-import com.parassidhu.coronavirusapp.util.NetworkResult
-import com.parassidhu.coronavirusapp.util.fromJson
+import com.parassidhu.coronavirusapp.network.response.*
+import com.parassidhu.coronavirusapp.util.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,9 +25,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private val _countryWiseCasesResponse = MutableLiveData<List<CountryStat>>()
-    val countryWiseCasesResponse: LiveData<List<CountryStat>>
-        get() = _countryWiseCasesResponse
+    val combinedLiveData = CombinedLiveData(getFavorites(),
+        getCountryLiveData()) { list1: List<FavoriteCountry>?, list2: List<CountryStat>? ->
+        val finalList = mutableListOf<BaseCountryResponse>()
+        if (list1 != null && list2 != null) {
+            finalList.addAll(list1)
+            finalList.addAll(list2)
+            return@CombinedLiveData finalList.distinctBy {
+                if (it is FavoriteCountry)
+                    it.countryName
+                else
+                    (it as CountryStat).countryName
+            }
+        } else {
+            return@CombinedLiveData listOf<CountryStat>()
+        }
+    }
 
     private val _worldStats = MutableLiveData<WorldStats>()
     val worldStats: LiveData<WorldStats>
@@ -48,13 +56,11 @@ class MainViewModel @Inject constructor(
 
     fun getCountryWiseCases() {
         viewModelScope.launch {
-            getCountryWiseDataFromDb()
             val response = repo.getCountryWiseCases()
 
             when(response) {
                 is NetworkResult.Success -> {
                     val data = response.data
-                    _countryWiseCasesResponse.value = data.countryStats
                     insertCountries(data.countryStats)
                 }
 
@@ -101,10 +107,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getCountryWiseDataFromDb() {
+    fun addToFavorite(countryStat: FavoriteCountry) {
         viewModelScope.launch {
-            val list = repo.getCountries()
-            _countryWiseCasesResponse.value = list
+            repo.addToFavorite(countryStat)
         }
     }
+
+    fun removeFromFavorite(countryStat: FavoriteCountry) {
+        viewModelScope.launch {
+            repo.removeFromFavorite(countryStat)
+        }
+    }
+
+    fun getCountryLiveData() = repo.getCountries()
+
+    fun getFavorites() = repo.getFavorites()
 }

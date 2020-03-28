@@ -17,6 +17,19 @@ data class CountryStat(
     @SerializedName("cases") val totalCases: String,
     @SerializedName("deaths") val totalDeaths: String,
     @SerializedName("total_recovered") val totalRecovered: String,
-    @SerializedName("new_cases") val newCases: String,
-    val isFavorite: Boolean = false
-)
+    @SerializedName("new_cases") val newCases: String
+): BaseCountryResponse()
+
+@Entity(tableName = "fav_country_table")
+data class FavoriteCountry(
+
+    @PrimaryKey
+    @SerializedName("country_name") val countryName: String,
+
+    @SerializedName("cases") val totalCases: String,
+    @SerializedName("deaths") val totalDeaths: String,
+    @SerializedName("total_recovered") val totalRecovered: String,
+    @SerializedName("new_cases") val newCases: String
+): BaseCountryResponse()
+
+open class BaseCountryResponse()

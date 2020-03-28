@@ -1,5 +1,7 @@
 package com.parassidhu.coronavirusapp.util
 
+import com.parassidhu.coronavirusapp.network.response.CountryStat
+import com.parassidhu.coronavirusapp.network.response.FavoriteCountry
 import com.parassidhu.coronavirusapp.network.response.WorldStats
 
 object Utils {
@@ -21,5 +23,34 @@ object Utils {
             e.printStackTrace()
             return Triple(1f,1f,1f)
         }
+    }
+
+    fun toFavorite(countryStat: CountryStat): FavoriteCountry {
+        return FavoriteCountry(
+            countryStat.countryName,
+            countryStat.totalCases,
+            countryStat.totalDeaths,
+            countryStat.totalRecovered,
+            countryStat.newCases
+        )
+    }
+
+    fun toCountryStat(countryStat: FavoriteCountry): CountryStat {
+        return CountryStat(
+            countryStat.countryName,
+            countryStat.totalCases,
+            countryStat.totalDeaths,
+            countryStat.totalRecovered,
+            countryStat.newCases
+        )
+    }
+
+    fun toCountryStatList(list: List<FavoriteCountry>): MutableList<CountryStat> {
+        val finalList = mutableListOf<CountryStat>()
+        list.forEach {
+            finalList.add(toCountryStat(it))
+        }
+
+        return finalList
     }
 }

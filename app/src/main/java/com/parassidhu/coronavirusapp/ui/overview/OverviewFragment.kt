@@ -23,8 +23,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
 import com.parassidhu.coronavirusapp.R
 import com.parassidhu.coronavirusapp.base.BaseFragment
-import com.parassidhu.coronavirusapp.network.response.BannerResult
-import com.parassidhu.coronavirusapp.network.response.WorldStats
+import com.parassidhu.coronavirusapp.network.response.*
 import com.parassidhu.coronavirusapp.ui.about.AboutPopup
 import com.parassidhu.coronavirusapp.ui.main.MainViewModel
 import com.parassidhu.coronavirusapp.ui.main.adapter.CountryWiseAdapter
@@ -32,7 +31,8 @@ import com.parassidhu.coronavirusapp.util.*
 import kotlinx.android.synthetic.main.fragment_overview.*
 import kotlin.random.Random
 
-class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener, CountryWiseAdapter.OnEvent {
+class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
+    CountryWiseAdapter.OnEvent {
 
     private val viewModel by viewModels<MainViewModel> { viewModelFactory }
 
@@ -52,10 +52,11 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener, C
     }
 
     private fun setupObservers() {
-        viewModel.countryWiseCasesResponse.observe(viewLifecycleOwner) { list ->
+        viewModel.combinedLiveData.observe(viewLifecycleOwner) { list ->
             listAdapter.clear()
             listAdapter.addData(list)
             showLoading(false)
+            log("Combined Live Data")
         }
 
         viewModel.worldStats.observe(viewLifecycleOwner) { response ->
@@ -73,7 +74,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener, C
     }
 
     private fun setupBanner(list: List<BannerResult>) {
-        handler.post(object: Runnable {
+        handler.post(object : Runnable {
             override fun run() {
                 val randomNumber = Random.nextInt(3, list.size)
                 val randomItem = list[randomNumber]
@@ -199,12 +200,12 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener, C
         }
     }
 
-   /* override fun onBackPressed() {
-        if (searchBar.isVisible)
-            backButton.callOnClick()
-        else
-            super.onBackPressed()
-    }*/
+    /* override fun onBackPressed() {
+         if (searchBar.isVisible)
+             backButton.callOnClick()
+         else
+             super.onBackPressed()
+     }*/
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         swipeToRefresh.isEnabled = verticalOffset == 0 && !searchBar.isVisible
@@ -224,5 +225,19 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener, C
         val params = Bundle()
         params.putString("query", query)
         firebaseAnalytics.logEvent("search_query", params)
+    }
+
+    override fun onPinClick(response: BaseCountryResponse, isPinned: Boolean) {
+        if (isPinned) {
+            if (response is CountryStat)
+                viewModel.addToFavorite(Utils.toFavorite(response))
+            else if (response is FavoriteCountry)
+                viewModel.addToFavorite(response)
+        } else {
+            if (response is CountryStat)
+                viewModel.removeFromFavorite(Utils.toFavorite(response))
+            else if (response is FavoriteCountry)
+                viewModel.removeFromFavorite(response)
+        }
     }
 }

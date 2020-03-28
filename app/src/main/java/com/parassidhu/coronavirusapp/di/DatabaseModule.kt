@@ -13,7 +13,8 @@ import javax.inject.Singleton
 class DatabaseModule(var application: CoronaApp) {
 
     private var database =
-        Room.databaseBuilder(application, CoronaDatabase::class.java, "corona_database").build()
+        Room.databaseBuilder(application, CoronaDatabase::class.java, "corona_database")
+            .build()
 
     @Singleton
     @Provides

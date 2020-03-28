@@ -1,10 +1,9 @@
 package com.parassidhu.coronavirusapp.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.*
 import com.parassidhu.coronavirusapp.network.response.CountryStat
+import com.parassidhu.coronavirusapp.network.response.FavoriteCountry
 
 @Dao
 interface CountryDao {
@@ -13,5 +12,14 @@ interface CountryDao {
     suspend fun insert(list: List<CountryStat>)
 
     @Query("SELECT * FROM country_table")
-    suspend fun getCountries(): List<CountryStat>
+    fun getCountries(): LiveData<List<CountryStat>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addToFavorite(item: List<FavoriteCountry>)
+
+    @Delete
+    suspend fun removeFromFavorite(item: FavoriteCountry)
+
+    @Query("SELECT * FROM fav_country_table")
+    fun getAllFavorites(): LiveData<List<FavoriteCountry>>
 }
