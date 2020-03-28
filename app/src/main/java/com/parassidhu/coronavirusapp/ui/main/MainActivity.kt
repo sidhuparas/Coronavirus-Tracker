@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.view.Gravity
-import android.widget.LinearLayout
 import androidx.activity.viewModels
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -17,7 +15,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
@@ -31,7 +28,6 @@ import com.parassidhu.coronavirusapp.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
 
-
 class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, CountryWiseAdapter.OnEvent {
 
     private val viewModel by viewModels<MainViewModel> { viewModelFactory }
@@ -44,7 +40,6 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
         setContentView(R.layout.activity_main)
 
         init()
-        //loadBanner()
     }
 
     private fun setupObservers() {
@@ -72,13 +67,13 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
             override fun run() {
                 val randomNumber = Random.nextInt(3, list.size)
                 val randomItem = list[randomNumber]
-                loaddBanner(randomItem)
-                handler.postDelayed(this, 3000)
+                loadBanner(randomItem)
+                handler.postDelayed(this, 10000)
             }
         })
     }
 
-    private fun loaddBanner(randomItem: BannerResult) {
+    private fun loadBanner(randomItem: BannerResult) {
         Glide.with(this)
             .asBitmap()
             .load(randomItem.image)
@@ -98,15 +93,6 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
             })
 
         //bannerImage.invalidate()
-    }
-
-    private fun loadBanner() {
-        Glide.with(this)
-            .load(glideUrl)
-            .placeholder(R.drawable.placeholder)
-            .apply(cornerRadius(10))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .into(bannerImage)
     }
 
     private fun init() {
@@ -136,7 +122,6 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
         swipeToRefresh.setOnRefreshListener {
             listAdapter.clear()
             makeApiCalls()
-            loadBanner()
             swipeToRefresh.isRefreshing = false
         }
 
