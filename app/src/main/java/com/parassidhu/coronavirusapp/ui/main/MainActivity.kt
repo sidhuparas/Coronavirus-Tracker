@@ -1,39 +1,21 @@
 package com.parassidhu.coronavirusapp.ui.main
 
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.text.Editable
-import android.view.Gravity
-import androidx.activity.viewModels
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.observe
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.google.android.material.appbar.AppBarLayout
+import android.view.MenuItem
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.parassidhu.coronavirusapp.R
 import com.parassidhu.coronavirusapp.base.BaseActivity
-import com.parassidhu.coronavirusapp.network.response.BannerResult
-import com.parassidhu.coronavirusapp.network.response.WorldStats
-import com.parassidhu.coronavirusapp.ui.about.AboutPopup
-import com.parassidhu.coronavirusapp.ui.main.adapter.CountryWiseAdapter
-import com.parassidhu.coronavirusapp.util.*
+import com.parassidhu.coronavirusapp.ui.india.IndiaFragment
+import com.parassidhu.coronavirusapp.ui.overview.OverviewFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.random.Random
 
-class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, CountryWiseAdapter.OnEvent {
+class MainActivity : BaseActivity() {
 
-    private val viewModel by viewModels<MainViewModel> { viewModelFactory }
+    private var activeFragment = Fragment()
 
-    private val listAdapter by lazy { CountryWiseAdapter(mutableListOf(), this) }
-    private val handler = Handler()
+    private val overviewFragment by lazy { OverviewFragment() }
+    private val indiaFragment by lazy { IndiaFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,179 +24,82 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
         init()
     }
 
-    private fun setupObservers() {
-        viewModel.countryWiseCasesResponse.observe(this) { list ->
-            listAdapter.addData(list)
-            showLoading(false)
-        }
-
-        viewModel.worldStats.observe(this) { response ->
-            setupWorldStats(response)
-        }
-
-        viewModel.bannerResponse.observe(this) { list ->
-            setupBanner(list)
-        }
-
-        viewModel.errorLiveData.observe(this) { error ->
-            if (error != null)
-                toast(error)
-        }
-    }
-
-    private fun setupBanner(list: List<BannerResult>) {
-        handler.post(object: Runnable {
-            override fun run() {
-                val randomNumber = Random.nextInt(3, list.size)
-                val randomItem = list[randomNumber]
-                loadBanner(randomItem)
-                handler.postDelayed(this, 10000)
-            }
-        })
-    }
-
-    private fun loadBanner(randomItem: BannerResult) {
-        Glide.with(this)
-            .asBitmap()
-            .load(randomItem.image)
-            .placeholder(R.drawable.placeholder)
-            .apply(cornerRadius(10))
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    bannerImage.setImageBitmap(resource)
-                    val set = ConstraintSet()
-                    set.clone(rootLayout)
-                    set.setDimensionRatio(bannerImage.id, randomItem.ratio)
-                    set.applyTo(rootLayout)
-                }
-            })
-
-        //bannerImage.invalidate()
-    }
-
     private fun init() {
-        showLoading(true)
-        setupObservers()
-        setupRecyclerView()
-        setListeners()
+        setupBottomBar()
+        showInitialFragment()
     }
 
-    private fun setListeners() {
-        searchImageView.setOnClickListener {
-            showSearch(true)
-            runInHandler(200) { showKeyboard(searchEditText, true) }
-            searchEditText.requestFocus()
-        }
+    private fun showInitialFragment() {
+        activeFragment = overviewFragment
 
-        backButton.setOnClickListener {
-            showSearch(false)
-            showKeyboard(searchEditText, false)
-            searchEditText.setText("")
-        }
-
-        searchEditText.doAfterTextChanged { text: Editable? ->
-            listAdapter.search(text.toString())
-        }
-
-        swipeToRefresh.setOnRefreshListener {
-            listAdapter.clear()
-            makeApiCalls()
-            swipeToRefresh.isRefreshing = false
-        }
-
-        hamburgerImageView.setOnClickListener {
-            AboutPopup.Builder(this)
-                .setGravity(Gravity.CENTER)
-                .setTintColor((Color.parseColor("#80000000")))
-                .build()
-                .show()
+        supportFragmentManager.commit {
+            add(R.id.homeContainer, overviewFragment, OVERVIEW)
         }
     }
 
-    private fun makeApiCalls() {
-        viewModel.getCountryWiseCases()
-        viewModel.getWorldStats()
-    }
+    private fun setupBottomBar() {
+        bottomNavBar.setOnNavigationItemSelectedListener { item: MenuItem ->
+            when(item.itemId) {
+                R.id.action_overview -> handleOverviewAction()
+                R.id.action_india -> handleIndiaAction()
+            }
 
-    private fun setupRecyclerView() {
-        countryWiseRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = listAdapter
+            return@setOnNavigationItemSelectedListener true
         }
     }
 
-    private fun setupWorldStats(response: WorldStats) {
-        val weight = Utils.provideBarWeights(response)
+    private fun handleOverviewAction() {
+        when (activeFragment) {
+            overviewFragment -> {
+                return
+            }
+            indiaFragment -> {
+                val frag = supportFragmentManager.findFragmentByTag(OVERVIEW)
 
-        Glide.with(this).load(R.drawable.yellow_bar).apply(cornerRadius(2)).into(yellowBar)
-        Glide.with(this).load(R.drawable.green_bar).apply(cornerRadius(2)).into(greenBar)
-        Glide.with(this).load(R.drawable.red_bar).apply(cornerRadius(2)).into(redBar)
-
-        yellowBar.setWeight(weight.first)
-        greenBar.setWeight(weight.second)
-        redBar.setWeight(weight.third)
-
-        barContainer.weightSum = weight.first + weight.second + weight.third
-
-        response.apply {
-            confirmedCount.text = totalCases
-            recoveredCount.text = totalRecovered
-            deathCount.text = totalDeath
+                if (frag == null) {
+                    supportFragmentManager.commit {
+                        hide(activeFragment)
+                        add(R.id.homeContainer, overviewFragment, OVERVIEW)
+                    }
+                } else {
+                    supportFragmentManager.commit {
+                        hide(activeFragment)
+                        show(frag)
+                    }
+                }
+            }
         }
+
+        activeFragment = overviewFragment
     }
 
-    private fun showLoading(flag: Boolean) {
-        countryWiseRecyclerView.isVisible = !flag
-        toolbarViews.isVisible = !flag
+    private fun handleIndiaAction() {
+        when (activeFragment) {
+            overviewFragment -> {
+                val frag = supportFragmentManager.findFragmentByTag(INDIA)
 
-        if (flag)
-            shimmerLoading.start()
-        else
-            shimmerLoading.stop()
-    }
-
-    private fun showSearch(flag: Boolean) {
-        searchBar.isInvisible = !flag
-        backButton.isInvisible = !flag
-        hamburgerImageView.isInvisible = flag
-        searchImageView.isInvisible = flag
-        toolbarViews.isVisible = !flag
-        bannerImage.isVisible = !flag
-        titleLogo.isVisible = !flag
-        swipeToRefresh.isEnabled = !flag
-
-        if (!flag) {
-            listAdapter.search("")
+                if (frag == null) {
+                    supportFragmentManager.commit {
+                        hide(activeFragment)
+                        add(R.id.homeContainer, indiaFragment, INDIA)
+                    }
+                } else {
+                    supportFragmentManager.commit {
+                        hide(activeFragment)
+                        show(frag)
+                    }
+                }
+            }
+            indiaFragment -> {
+                return
+            }
         }
+
+        activeFragment = indiaFragment
     }
 
-    override fun onBackPressed() {
-        if (searchBar.isVisible)
-            backButton.callOnClick()
-        else
-            super.onBackPressed()
-    }
-
-    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        swipeToRefresh.isEnabled = verticalOffset == 0 && !searchBar.isVisible
-    }
-
-    override fun onResume() {
-        super.onResume()
-        appBarLayout?.addOnOffsetChangedListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        appBarLayout?.removeOnOffsetChangedListener(this)
-    }
-
-    override fun logEvent(query: String) {
-        val params = Bundle()
-        params.putString("query", query)
-        firebaseAnalytics.logEvent("search_query", params)
+    companion object {
+        private const val OVERVIEW = "overview"
+        private const val INDIA = "india"
     }
 }

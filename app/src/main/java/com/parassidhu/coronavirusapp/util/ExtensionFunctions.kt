@@ -7,10 +7,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
 
 fun ShimmerFrameLayout.start() {
     isVisible = true
@@ -34,6 +34,8 @@ fun View.setWeight(weight: Float) {
     layoutParams = param
 }
 
+fun Fragment.showKeyboard(view: View, flag: Boolean) = requireContext().showKeyboard(view, flag)
+
 fun Context.showKeyboard(view: View, flag: Boolean) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -46,5 +48,7 @@ fun Context.showKeyboard(view: View, flag: Boolean) {
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
+
+fun Fragment.toast(message: String) = requireContext().toast(message)
 
 inline fun <reified T> Gson.fromJson(json: String) = fromJson<T>(json, object: TypeToken<T>() {}.type)
