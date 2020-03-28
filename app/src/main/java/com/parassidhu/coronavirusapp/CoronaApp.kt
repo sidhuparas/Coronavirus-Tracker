@@ -1,40 +1,33 @@
 package com.parassidhu.coronavirusapp
 
 import android.app.Application
-import com.parassidhu.coronavirusapp.di.ApplicationComponent
-import com.parassidhu.coronavirusapp.di.ApplicationModule
-import com.parassidhu.coronavirusapp.di.DaggerApplicationComponent
+import com.facebook.stetho.Stetho
+import com.parassidhu.coronavirusapp.di.*
 
 class CoronaApp: Application() {
-
-   /* @Inject
-    lateinit var networkFlipperPlugin: NetworkFlipperPlugin*/
 
     override fun onCreate() {
         super.onCreate()
         instance = this
 
         initDagger()
-        initFlipper()
+        initRest()
+    }
+
+    private fun initRest() {
+        if (BuildConfig.DEBUG)
+            Stetho.initializeWithDefaults(this)
     }
 
     private fun initDagger() {
         component =
-            DaggerApplicationComponent.builder().applicationModule(ApplicationModule(this)).build()
+            DaggerApplicationComponent
+                .builder()
+                .applicationModule(ApplicationModule(this))
+                .databaseModule(DatabaseModule(this))
+                .build()
+
         component.inject(this)
-    }
-
-    private fun initFlipper() {
-        /*SoLoader.init(this, false)
-
-        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
-            val client = AndroidFlipperClient.getInstance(this).apply {
-
-                addPlugin(InspectorFlipperPlugin(this@CoronaApp, DescriptorMapping.withDefaults()))
-                addPlugin(networkFlipperPlugin)
-                start()
-            }
-        }*/
     }
 
     companion object {

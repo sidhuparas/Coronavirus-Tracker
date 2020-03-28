@@ -53,6 +53,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener, C
 
     private fun setupObservers() {
         viewModel.countryWiseCasesResponse.observe(viewLifecycleOwner) { list ->
+            listAdapter.clear()
             listAdapter.addData(list)
             showLoading(false)
         }

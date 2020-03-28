@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_overview"
         android:icon="@android:drawable/ic_menu_help"
-        android:title="Home" />
+        android:title="Overview" />
 
     <item
         android:id="@+id/action_india"

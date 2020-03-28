@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.ktx.get
 import com.google.gson.Gson
 import com.parassidhu.coronavirusapp.network.response.BannerResponse
 import com.parassidhu.coronavirusapp.network.response.BannerResult
@@ -14,7 +13,6 @@ import com.parassidhu.coronavirusapp.network.response.WorldStats
 import com.parassidhu.coronavirusapp.util.Constants
 import com.parassidhu.coronavirusapp.util.NetworkResult
 import com.parassidhu.coronavirusapp.util.fromJson
-import com.parassidhu.coronavirusapp.util.log
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,12 +48,14 @@ class MainViewModel @Inject constructor(
 
     fun getCountryWiseCases() {
         viewModelScope.launch {
+            getCountryWiseDataFromDb()
             val response = repo.getCountryWiseCases()
 
             when(response) {
                 is NetworkResult.Success -> {
                     val data = response.data
                     _countryWiseCasesResponse.value = data.countryStats
+                    insertCountries(data.countryStats)
                 }
 
                 is NetworkResult.Error -> {
@@ -92,6 +92,19 @@ class MainViewModel @Inject constructor(
                     _bannerResponse.value = gson.fromJson<BannerResponse>(data).data
                 }
             }
+        }
+    }
+
+    private fun insertCountries(list: List<CountryStat>) {
+        viewModelScope.launch {
+            repo.insertCountries(list)
+        }
+    }
+
+    private fun getCountryWiseDataFromDb() {
+        viewModelScope.launch {
+            val list = repo.getCountries()
+            _countryWiseCasesResponse.value = list
         }
     }
 }
