@@ -1,6 +1,7 @@
 package com.parassidhu.coronavirusapp.util
 
 import android.os.Handler
+import android.util.Log
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -37,4 +38,8 @@ suspend fun <T> safeApiCall(
 
 fun runInHandler(timeInMillis: Long, action: () -> Unit) {
     Handler().postDelayed(action, timeInMillis)
+}
+
+fun log(message: String?) {
+    Log.d("Paras", message)
 }

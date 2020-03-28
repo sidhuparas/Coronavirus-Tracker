@@ -5,6 +5,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import okhttp3.*
@@ -98,6 +99,12 @@ class NetworkModule {
             .addHeader("x-rapidapi-key", Constants.API_KEY)
             .build()
         )
+    }
+
+    @Provides
+    @Singleton
+    fun getGson(): Gson {
+        return Gson()
     }
 
     @Provides

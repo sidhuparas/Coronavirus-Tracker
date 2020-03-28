@@ -1,38 +1,50 @@
 package com.parassidhu.coronavirusapp.ui.main
 
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.view.Gravity
+import android.widget.LinearLayout
 import androidx.activity.viewModels
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.parassidhu.coronavirusapp.R
-import kotlinx.android.synthetic.main.activity_main.*
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
+import com.parassidhu.coronavirusapp.R
 import com.parassidhu.coronavirusapp.base.BaseActivity
+import com.parassidhu.coronavirusapp.network.response.BannerResult
 import com.parassidhu.coronavirusapp.network.response.WorldStats
 import com.parassidhu.coronavirusapp.ui.about.AboutPopup
 import com.parassidhu.coronavirusapp.ui.main.adapter.CountryWiseAdapter
 import com.parassidhu.coronavirusapp.util.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.random.Random
+
 
 class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, CountryWiseAdapter.OnEvent {
 
     private val viewModel by viewModels<MainViewModel> { viewModelFactory }
 
     private val listAdapter by lazy { CountryWiseAdapter(mutableListOf(), this) }
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         init()
-        loadBanner()
+        //loadBanner()
     }
 
     private fun setupObservers() {
@@ -45,10 +57,47 @@ class MainActivity : BaseActivity(), AppBarLayout.OnOffsetChangedListener, Count
             setupWorldStats(response)
         }
 
+        viewModel.bannerResponse.observe(this) { list ->
+            setupBanner(list)
+        }
+
         viewModel.errorLiveData.observe(this) { error ->
             if (error != null)
                 toast(error)
         }
+    }
+
+    private fun setupBanner(list: List<BannerResult>) {
+        handler.post(object: Runnable {
+            override fun run() {
+                val randomNumber = Random.nextInt(3, list.size)
+                val randomItem = list[randomNumber]
+                loaddBanner(randomItem)
+                handler.postDelayed(this, 3000)
+            }
+        })
+    }
+
+    private fun loaddBanner(randomItem: BannerResult) {
+        Glide.with(this)
+            .asBitmap()
+            .load(randomItem.image)
+            .placeholder(R.drawable.placeholder)
+            .apply(cornerRadius(10))
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    bannerImage.setImageBitmap(resource)
+                    val set = ConstraintSet()
+                    set.clone(rootLayout)
+                    set.setDimensionRatio(bannerImage.id, randomItem.ratio)
+                    set.applyTo(rootLayout)
+                }
+            })
+
+        //bannerImage.invalidate()
     }
 
     private fun loadBanner() {

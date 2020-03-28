@@ -6,21 +6,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.get
+import com.google.gson.Gson
+import com.parassidhu.coronavirusapp.network.response.BannerResponse
+import com.parassidhu.coronavirusapp.network.response.BannerResult
 import com.parassidhu.coronavirusapp.network.response.CountryStat
 import com.parassidhu.coronavirusapp.network.response.WorldStats
+import com.parassidhu.coronavirusapp.util.Constants
 import com.parassidhu.coronavirusapp.util.NetworkResult
+import com.parassidhu.coronavirusapp.util.fromJson
+import com.parassidhu.coronavirusapp.util.log
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val repo: MainRepo,
-    private val remoteConfig: FirebaseRemoteConfig
+    private val remoteConfig: FirebaseRemoteConfig,
+    private val gson: Gson
 ): ViewModel() {
 
     init {
         viewModelScope.launch {
             getCountryWiseCases()
             getWorldStats()
+            getBanners()
         }
     }
 
@@ -31,6 +39,10 @@ class MainViewModel @Inject constructor(
     private val _worldStats = MutableLiveData<WorldStats>()
     val worldStats: LiveData<WorldStats>
         get() = _worldStats
+
+    private val _bannerResponse = MutableLiveData<List<BannerResult>>()
+    val bannerResponse: LiveData<List<BannerResult>>
+        get() = _bannerResponse
 
     private val _errorLiveData = MutableLiveData<String?>()
     val errorLiveData: LiveData<String?>
@@ -72,11 +84,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBanners() {
+    private fun getBanners() {
         viewModelScope.launch {
             remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isComplete) {
-
+                    val data = remoteConfig.getString(Constants.BANNER_JSON)
+                    _bannerResponse.value = gson.fromJson<BannerResponse>(data).data
                 }
             }
         }
