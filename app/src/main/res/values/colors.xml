@@ -14,4 +14,6 @@
     <color name="white">#ffffff</color>
 
     <color name="search_bar_color">#CDD0D4</color>
+    <color name="toolbar_color">#3E4A62</color>
+    <color name="bottom_nav_color">#142443</color>
 </resources>

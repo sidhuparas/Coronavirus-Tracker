@@ -17,7 +17,9 @@
         android:id="@+id/bottomNavBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="unlabeled"
+        app:itemIconTint="@color/white"
+        android:background="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>
