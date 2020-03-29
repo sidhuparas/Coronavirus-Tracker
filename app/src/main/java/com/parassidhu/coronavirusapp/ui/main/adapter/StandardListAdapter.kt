@@ -11,6 +11,8 @@ import com.parassidhu.coronavirusapp.network.response.BaseCountryResponse
 import com.parassidhu.coronavirusapp.network.response.CountryStat
 import com.parassidhu.coronavirusapp.network.response.FavoriteCountry
 import com.parassidhu.coronavirusapp.network.response.StatewiseResult
+import com.parassidhu.coronavirusapp.util.SortEnum
+import com.parassidhu.coronavirusapp.util.SortEnum.*
 import kotlinx.android.synthetic.main.item_list.view.*
 import kotlinx.android.synthetic.main.item_list.view.cardRootView
 import kotlinx.android.synthetic.main.item_list.view.confirmedCount
@@ -100,12 +102,32 @@ class StandardListAdapter(
         notifyDataSetChanged()
     }
 
-    fun sort() {
-        list.sortBy {
-            if (it is StatewiseResult)
-                it.totalConfirmed.toInt()
-            else
-                1
+    fun sort(sortOrder: SortEnum) {
+         when(sortOrder) {
+            ALPHABETICAL -> {
+                list.sortBy {
+                    if (it is StatewiseResult)
+                        it.stateName
+                    else
+                        ""
+                }
+            }
+            ASCENDING -> {
+                list.sortBy {
+                    if (it is StatewiseResult)
+                        it.totalConfirmed.toInt()
+                    else
+                        1
+                }
+            }
+            DESCENDING -> {
+                list.sortBy {
+                    if (it is StatewiseResult)
+                        -it.totalConfirmed.toInt()
+                    else
+                        1
+                }
+            }
         }
 
         notifyDataSetChanged()
@@ -115,7 +137,7 @@ class StandardListAdapter(
 
         fun bind(result: StatewiseResult) {
             itemView.apply {
-                stateName.text = result.stateName
+                stateName.text = result.stateName.toUpperCase()
                 newCasesCount.text = result.deltaResult.confirmed.toString()
                 confirmedCount.text = result.totalConfirmed
                 recoveredCount.text = result.totalRecovered
@@ -135,7 +157,7 @@ class StandardListAdapter(
 
         fun bind(countryStat: CountryStat) {
             itemView.apply {
-                countryName.text = countryStat.countryName
+                countryName.text = countryStat.countryName.toUpperCase()
                 newCasesCount.text = countryStat.newCases
                 confirmedCount.text = countryStat.totalCases
                 recoveredCount.text = countryStat.totalRecovered
@@ -160,7 +182,7 @@ class StandardListAdapter(
 
         fun bind(favoriteCountry: FavoriteCountry) {
             itemView.apply {
-                countryName.text = favoriteCountry.countryName
+                countryName.text = favoriteCountry.countryName.toUpperCase()
                 newCasesCount.text = favoriteCountry.newCases
                 confirmedCount.text = favoriteCountry.totalCases
                 recoveredCount.text = favoriteCountry.totalRecovered

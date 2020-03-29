@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/action_overview"
-        android:icon="@drawable/ic_globe"
-        android:title="Overview" />
+        android:icon="@drawable/overview_selector"
+        android:title="@string/tab_1" />
 
     <item
         android:id="@+id/action_india"
-        android:icon="@drawable/ic_india"
-        android:title="India" />
+        android:icon="@drawable/india_selector"
+        android:title="@string/tab_2" />
 </menu>

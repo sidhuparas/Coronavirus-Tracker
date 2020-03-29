@@ -77,7 +77,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
     private fun setupBanner(list: List<BannerResult>) {
         handler.post(object : Runnable {
             override fun run() {
-                val randomNumber = Random.nextInt(3, list.size)
+                val randomNumber = Random.nextInt(0, list.size)
                 val randomItem = list[randomNumber]
                 loadBanner(randomItem)
                 handler.postDelayed(this, 10000)
