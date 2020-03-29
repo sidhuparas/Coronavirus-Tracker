@@ -11,4 +11,5 @@
     <string name="network_error_message">Please check your internet connection and try again!</string>
     <string name="disclaimer">This is not an official app and the data may vary depending upon the API. For exact numbers, you should rely on a government source.</string>
     <string name="new_cases">New Cases</string>
+    <string name="sort">Sort</string>
 </resources>

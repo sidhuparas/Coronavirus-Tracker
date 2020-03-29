@@ -17,15 +17,6 @@ class MainViewModel @Inject constructor(
     private val gson: Gson
 ): ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            getCountryWiseCases()
-            getWorldStats()
-            getStatewiseStats()
-            getBanners()
-        }
-    }
-
     val combinedLiveData = CombinedLiveData(getFavorites(),
         getCountryLiveData()) { list1: List<FavoriteCountry>?, list2: List<CountryStat>? ->
         val finalList = mutableListOf<BaseCountryResponse>()
@@ -96,7 +87,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getStatewiseStats() {
+    fun getStatewiseStats() {
         viewModelScope.launch {
             val response = repo.getStatewiseStats()
 
@@ -114,7 +105,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getBanners() {
+    fun getBanners() {
         viewModelScope.launch {
             remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isComplete) {

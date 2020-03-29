@@ -1,43 +1,53 @@
 package com.parassidhu.coronavirusapp.ui.main.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.parassidhu.coronavirusapp.R
+import com.parassidhu.coronavirusapp.base.BaseRecyclerViewAdapter
 import com.parassidhu.coronavirusapp.network.response.BaseCountryResponse
 import com.parassidhu.coronavirusapp.network.response.CountryStat
 import com.parassidhu.coronavirusapp.network.response.FavoriteCountry
-import kotlinx.android.synthetic.main.fragment_overview.view.*
+import com.parassidhu.coronavirusapp.network.response.StatewiseResult
 import kotlinx.android.synthetic.main.item_list.view.*
+import kotlinx.android.synthetic.main.item_list.view.cardRootView
 import kotlinx.android.synthetic.main.item_list.view.confirmedCount
 import kotlinx.android.synthetic.main.item_list.view.deathCount
+import kotlinx.android.synthetic.main.item_list.view.newCasesCount
 import kotlinx.android.synthetic.main.item_list.view.recoveredCount
+import kotlinx.android.synthetic.main.item_state.view.*
 
-class CountryWiseAdapter(
+class StandardListAdapter(
     private val list: MutableList<BaseCountryResponse>,
     private val listener: OnEvent
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+): BaseRecyclerViewAdapter() {
 
     private var originalList = mutableListOf<BaseCountryResponse>()
 
     private val TYPE_FAVORITE = 1
     private val TYPE_NORMAL = 2
+    private val TYPE_STATE = 3
 
     override fun getItemViewType(position: Int): Int {
         return if (list[position] is FavoriteCountry)
             TYPE_FAVORITE
+        else if (list[position] is StatewiseResult)
+            TYPE_STATE
         else
             TYPE_NORMAL
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
+        val view = getView(R.layout.item_list, parent)
+        val stateView = getView(R.layout.item_state, parent)
 
         return if (viewType == TYPE_NORMAL)
             CountryWiseViewHolder(view)
-        else
+        else if (viewType == TYPE_FAVORITE)
             FavoriteViewHolder(view)
+        else
+            StateViewHolder(stateView)
     }
 
     fun addData(list: List<BaseCountryResponse>) {
@@ -59,6 +69,8 @@ class CountryWiseAdapter(
             holder.bind(list[position] as CountryStat)
         else if (holder is FavoriteViewHolder)
             holder.bind(list[position] as FavoriteCountry)
+        else if (holder is StateViewHolder)
+            holder.bind(list[position] as StatewiseResult)
     }
 
     fun search(query: String) {
@@ -86,6 +98,37 @@ class CountryWiseAdapter(
         }
 
         notifyDataSetChanged()
+    }
+
+    fun sort() {
+        list.sortBy {
+            if (it is StatewiseResult)
+                it.totalConfirmed.toInt()
+            else
+                1
+        }
+
+        notifyDataSetChanged()
+    }
+
+    inner class StateViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        fun bind(result: StatewiseResult) {
+            itemView.apply {
+                stateName.text = result.stateName
+                newCasesCount.text = result.deltaResult.confirmed.toString()
+                confirmedCount.text = result.totalConfirmed
+                recoveredCount.text = result.totalRecovered
+                deathCount.text = result.totalDeaths
+
+                if (result.deltaResult.confirmed > 0)
+                    Glide.with(itemView).load(R.drawable.ic_up_red).into(trendIcon)
+                else if (result.deltaResult.confirmed < 0)
+                    Glide.with(itemView).load(R.drawable.ic_down_green).into(trendIcon)
+                else
+                    trendIcon.isVisible = false
+            }
+        }
     }
 
     inner class CountryWiseViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

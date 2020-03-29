@@ -2,6 +2,7 @@ package com.parassidhu.coronavirusapp.di
 
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -44,7 +45,7 @@ class NetworkModule {
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(50, TimeUnit.SECONDS)
-            //.addNetworkInterceptor(FlipperOkhttpInterceptor(networkFlipperPlugin))
+            .addNetworkInterceptor(StethoInterceptor())
 
         if (BuildConfig.DEBUG)
             httpBuilder.addInterceptor(loggingInterceptor)

@@ -2,12 +2,16 @@ package com.parassidhu.coronavirusapp.ui.main
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import com.github.zawadz88.materialpopupmenu.popupMenu
 import com.parassidhu.coronavirusapp.R
 import com.parassidhu.coronavirusapp.base.BaseActivity
 import com.parassidhu.coronavirusapp.ui.india.IndiaFragment
 import com.parassidhu.coronavirusapp.ui.overview.OverviewFragment
+import com.parassidhu.coronavirusapp.util.SortEnum
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -27,6 +31,7 @@ class MainActivity : BaseActivity() {
     private fun init() {
         setupBottomBar()
         showInitialFragment()
+        fab.setOnClickListener { showFabOptions() }
     }
 
     private fun showInitialFragment() {
@@ -35,6 +40,35 @@ class MainActivity : BaseActivity() {
         supportFragmentManager.commit {
             add(R.id.homeContainer, overviewFragment, OVERVIEW)
         }
+    }
+
+    private fun showFabOptions() {
+        val popupMenu = popupMenu {
+            section {
+                item {
+                    label = SortEnum.ALPHABETICAL.name
+                    callback = {
+                        indiaFragment.onSort(SortEnum.ALPHABETICAL)
+                    }
+                }
+
+                item {
+                    label = SortEnum.ASCENDING.name
+                    callback = {
+                        indiaFragment.onSort(SortEnum.ASCENDING)
+                    }
+                }
+
+                item {
+                    label = SortEnum.DESCENDING.name
+                    callback = {
+                        indiaFragment.onSort(SortEnum.DESCENDING)
+                    }
+                }
+            }
+        }
+
+        popupMenu.show(this, fab)
     }
 
     private fun setupBottomBar() {
@@ -49,8 +83,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun handleOverviewAction() {
+        fab.isVisible = false
         when (activeFragment) {
             overviewFragment -> {
+                overviewFragment.scrollToTop()
                 return
             }
             indiaFragment -> {
@@ -74,6 +110,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun handleIndiaAction() {
+        fab.isVisible = true
         when (activeFragment) {
             overviewFragment -> {
                 val frag = supportFragmentManager.findFragmentByTag(INDIA)
@@ -99,7 +136,17 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (activeFragment == overviewFragment) {
+            if (overviewFragment.handleBackPress()) {
+
+            } else {
+                finish()
+            }
+        } else if (activeFragment == indiaFragment) {
+            handleOverviewAction()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     companion object {

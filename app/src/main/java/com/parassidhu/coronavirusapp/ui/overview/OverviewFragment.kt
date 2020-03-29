@@ -26,17 +26,17 @@ import com.parassidhu.coronavirusapp.base.BaseFragment
 import com.parassidhu.coronavirusapp.network.response.*
 import com.parassidhu.coronavirusapp.ui.about.AboutPopup
 import com.parassidhu.coronavirusapp.ui.main.MainViewModel
-import com.parassidhu.coronavirusapp.ui.main.adapter.CountryWiseAdapter
+import com.parassidhu.coronavirusapp.ui.main.adapter.StandardListAdapter
 import com.parassidhu.coronavirusapp.util.*
 import kotlinx.android.synthetic.main.fragment_overview.*
 import kotlin.random.Random
 
 class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
-    CountryWiseAdapter.OnEvent {
+    StandardListAdapter.OnEvent {
 
     private val viewModel by viewModels<MainViewModel> { viewModelFactory }
 
-    private val listAdapter by lazy { CountryWiseAdapter(mutableListOf(), this) }
+    private val listAdapter by lazy { StandardListAdapter(mutableListOf(), this) }
     private val handler = Handler()
 
     override fun onCreateView(
@@ -112,6 +112,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
         showLoading(true)
         setupObservers()
         setupRecyclerView()
+        makeApiCalls()
         setListeners()
     }
 
@@ -150,6 +151,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
     private fun makeApiCalls() {
         viewModel.getCountryWiseCases()
         viewModel.getWorldStats()
+        viewModel.getBanners()
     }
 
     private fun setupRecyclerView() {
@@ -204,12 +206,19 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
         }
     }
 
-    /* override fun onBackPressed() {
-         if (searchBar.isVisible)
-             backButton.callOnClick()
-         else
-             super.onBackPressed()
-     }*/
+    fun scrollToTop() {
+        countryWiseRecyclerView?.smoothScrollToPosition(0)
+        appBarLayout?.setExpanded(true, true)
+    }
+
+    fun handleBackPress(): Boolean {
+        if (searchEditText.isVisible) {
+            showSearch(false)
+            return true
+        }
+
+        return false
+    }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         swipeToRefresh.isEnabled = verticalOffset == 0 && !searchBar.isVisible
