@@ -3,11 +3,10 @@ package com.parassidhu.coronavirusapp.ui.main
 import androidx.lifecycle.LiveData
 import com.parassidhu.coronavirusapp.db.CountryDao
 import com.parassidhu.coronavirusapp.network.ApiClient
-import com.parassidhu.coronavirusapp.network.response.CountryStat
-import com.parassidhu.coronavirusapp.network.response.CountryWiseCase
-import com.parassidhu.coronavirusapp.network.response.FavoriteCountry
-import com.parassidhu.coronavirusapp.network.response.WorldStats
+import com.parassidhu.coronavirusapp.network.response.*
 import com.parassidhu.coronavirusapp.util.NetworkResult
+import com.parassidhu.coronavirusapp.util.Utils
+import com.parassidhu.coronavirusapp.util.log
 import com.parassidhu.coronavirusapp.util.safeApiCall
 import javax.inject.Inject
 
@@ -38,8 +37,25 @@ class MainRepo @Inject constructor(
         return networkResult!!
     }
 
+    suspend fun getStatewiseStats(): NetworkResult<StatewiseResponse> {
+        var networkResult: NetworkResult<StatewiseResponse>? = null
+
+        safeApiCall( { apiClient.getStatewiseStats() },
+            { networkResult = it },
+            { networkResult = it }
+        )
+
+        return networkResult!!
+    }
+
     suspend fun insertCountries(list: List<CountryStat>) {
         dao.insert(list)
+        list.forEach {
+            if (dao.checkFavorite(it.countryName) > 0) {
+                log(it.countryName)
+                dao.addToFavorite(Utils.toFavorite(it))
+            }
+        }
     }
 
     fun getCountries(): LiveData<List<CountryStat>> {
@@ -47,7 +63,7 @@ class MainRepo @Inject constructor(
     }
 
     suspend fun addToFavorite(countryStat: FavoriteCountry) {
-        dao.addToFavorite(listOf(countryStat))
+        dao.addToFavorite(countryStat)
     }
 
     suspend fun removeFromFavorite(countryStat: FavoriteCountry) {

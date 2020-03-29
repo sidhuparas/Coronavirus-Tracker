@@ -98,6 +98,10 @@ class MainActivity : BaseActivity() {
         activeFragment = indiaFragment
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
+
     companion object {
         private const val OVERVIEW = "overview"
         private const val INDIA = "india"

@@ -21,6 +21,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             getCountryWiseCases()
             getWorldStats()
+            getStatewiseStats()
             getBanners()
         }
     }
@@ -31,6 +32,7 @@ class MainViewModel @Inject constructor(
         if (list1 != null && list2 != null) {
             finalList.addAll(list1)
             finalList.addAll(list2)
+
             return@CombinedLiveData finalList.distinctBy {
                 if (it is FavoriteCountry)
                     it.countryName
@@ -45,6 +47,10 @@ class MainViewModel @Inject constructor(
     private val _worldStats = MutableLiveData<WorldStats>()
     val worldStats: LiveData<WorldStats>
         get() = _worldStats
+
+    private val _stateResponse = MutableLiveData<List<StatewiseResult>>()
+    val stateResponse: LiveData<List<StatewiseResult>>
+        get() = _stateResponse
 
     private val _bannerResponse = MutableLiveData<List<BannerResult>>()
     val bannerResponse: LiveData<List<BannerResult>>
@@ -90,6 +96,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun getStatewiseStats() {
+        viewModelScope.launch {
+            val response = repo.getStatewiseStats()
+
+            when(response) {
+                is NetworkResult.Success -> {
+                    val data = response.data.data
+                    _stateResponse.value = data
+                }
+
+                is NetworkResult.Error -> {
+                    val data = response.exception
+                    _errorLiveData.value = data
+                }
+            }
+        }
+    }
+
     private fun getBanners() {
         viewModelScope.launch {
             remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
@@ -119,7 +143,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getCountryLiveData() = repo.getCountries()
+    private fun getCountryLiveData() = repo.getCountries()
 
-    fun getFavorites() = repo.getFavorites()
+    private fun getFavorites() = repo.getFavorites()
 }

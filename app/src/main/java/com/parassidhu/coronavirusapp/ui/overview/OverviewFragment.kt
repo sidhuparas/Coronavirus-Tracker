@@ -53,10 +53,11 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
 
     private fun setupObservers() {
         viewModel.combinedLiveData.observe(viewLifecycleOwner) { list ->
-            listAdapter.clear()
-            listAdapter.addData(list)
-            showLoading(false)
-            log("Combined Live Data")
+            if (list.isNotEmpty()) {
+                listAdapter.clear()
+                listAdapter.addData(list)
+                showLoading(false)
+            }
         }
 
         viewModel.worldStats.observe(viewLifecycleOwner) { response ->
@@ -85,6 +86,9 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
     }
 
     private fun loadBanner(randomItem: BannerResult) {
+        if (activity == null || activity?.isDestroyed == true || this.isDetached || this.isRemoving)
+            return
+
         Glide.with(this)
             .asBitmap()
             .load(randomItem.image)

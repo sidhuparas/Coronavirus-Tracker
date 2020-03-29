@@ -9,7 +9,11 @@ import com.parassidhu.coronavirusapp.R
 import com.parassidhu.coronavirusapp.network.response.BaseCountryResponse
 import com.parassidhu.coronavirusapp.network.response.CountryStat
 import com.parassidhu.coronavirusapp.network.response.FavoriteCountry
+import kotlinx.android.synthetic.main.fragment_overview.view.*
 import kotlinx.android.synthetic.main.item_list.view.*
+import kotlinx.android.synthetic.main.item_list.view.confirmedCount
+import kotlinx.android.synthetic.main.item_list.view.deathCount
+import kotlinx.android.synthetic.main.item_list.view.recoveredCount
 
 class CountryWiseAdapter(
     private val list: MutableList<BaseCountryResponse>,
@@ -133,6 +137,8 @@ class CountryWiseAdapter(
 
                 pinnedImageView.isVisible = true
                 pinImageView.isVisible = false
+
+                cardRootView.setBackgroundResource(R.drawable.bg_outline)
             }
         }
     }

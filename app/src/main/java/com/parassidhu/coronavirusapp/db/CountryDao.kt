@@ -15,7 +15,10 @@ interface CountryDao {
     fun getCountries(): LiveData<List<CountryStat>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addToFavorite(item: List<FavoriteCountry>)
+    suspend fun addToFavorite(item: FavoriteCountry)
+
+    @Query("SELECT COUNT(*) FROM fav_country_table WHERE countryName = :name")
+    suspend fun checkFavorite(name: String): Int
 
     @Delete
     suspend fun removeFromFavorite(item: FavoriteCountry)
