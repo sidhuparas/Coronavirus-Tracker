@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.parassidhu.coronavirusapp.R
@@ -22,7 +23,7 @@ import com.parassidhu.coronavirusapp.util.stop
 
 class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
 
-    private val viewModel by viewModels<MainViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<MainViewModel> { viewModelFactory }
 
     private val listAdapter  by lazy { StandardListAdapter(mutableListOf(), this) }
 
@@ -42,7 +43,6 @@ class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
         showLoading(true)
         setupRecyclerView()
         setupObservers()
-        viewModel.getStatewiseStats()
         setClickListeners()
     }
 

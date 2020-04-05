@@ -17,6 +17,15 @@ class MainViewModel @Inject constructor(
     private val gson: Gson
 ): ViewModel() {
 
+    init {
+        viewModelScope.launch {
+            getCountryWiseCases()
+            getStatewiseStats()
+            getBanners()
+            getWorldStats()
+        }
+    }
+
     val combinedLiveData = CombinedLiveData(getFavorites(),
         getCountryLiveData()) { list1: List<FavoriteCountry>?, list2: List<CountryStat>? ->
         val finalList = mutableListOf<BaseCountryResponse>()

@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -34,7 +34,7 @@ import kotlin.random.Random
 class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
     StandardListAdapter.OnEvent {
 
-    private val viewModel by viewModels<MainViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<MainViewModel> { viewModelFactory }
 
     private val listAdapter by lazy { StandardListAdapter(mutableListOf(), this) }
     private val handler = Handler()
@@ -112,7 +112,6 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
         showLoading(true)
         setupObservers()
         setupRecyclerView()
-        makeApiCalls()
         setListeners()
     }
 
@@ -151,7 +150,6 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
     private fun makeApiCalls() {
         viewModel.getCountryWiseCases()
         viewModel.getWorldStats()
-        viewModel.getBanners()
     }
 
     private fun setupRecyclerView() {

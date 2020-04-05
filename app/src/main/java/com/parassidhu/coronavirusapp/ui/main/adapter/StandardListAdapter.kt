@@ -138,14 +138,16 @@ class StandardListAdapter(
         fun bind(result: StatewiseResult) {
             itemView.apply {
                 stateName.text = result.stateName.toUpperCase()
-                newCasesCount.text = result.deltaResult.confirmed.toString()
+                newCasesCount.text = result.deltaConfirmed.toString()
                 confirmedCount.text = result.totalConfirmed
                 recoveredCount.text = result.totalRecovered
                 deathCount.text = result.totalDeaths
 
-                if (result.deltaResult.confirmed > 0)
+                trendIcon.isVisible = true
+
+                if (result.deltaConfirmed > 0)
                     Glide.with(itemView).load(R.drawable.ic_up_red).into(trendIcon)
-                else if (result.deltaResult.confirmed < 0)
+                else if (result.deltaConfirmed < 0)
                     Glide.with(itemView).load(R.drawable.ic_down_green).into(trendIcon)
                 else
                     trendIcon.isVisible = false
