@@ -212,7 +212,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
     }
 
     fun handleBackPress(): Boolean {
-        if (searchEditText.isVisible) {
+        if (searchBar.isVisible) {
             showSearch(false)
             return true
         }
