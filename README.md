@@ -21,7 +21,7 @@ Corona Tracker is written in Kotlin and makes use of KTX, Coroutines, Dagger2, R
 3. Connect the app with Firebase.
 4. That's it! You're good to go :)
 
-You can download the apk <a href="app-release.apk">here</a>.
+You can download the apk <a href="http://downloadinformer.com/corona-tracker.apk">here</a>.
 
 # Credits
 
