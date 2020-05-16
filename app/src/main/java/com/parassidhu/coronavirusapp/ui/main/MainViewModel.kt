@@ -119,7 +119,8 @@ class MainViewModel @Inject constructor(
             remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isComplete) {
                     val data = remoteConfig.getString(Constants.BANNER_JSON)
-                    _bannerResponse.value = gson.fromJson<BannerResponse>(data).data
+                    if (data.isNotEmpty())
+                        _bannerResponse.value = gson.fromJson<BannerResponse>(data).data
                 }
             }
         }
