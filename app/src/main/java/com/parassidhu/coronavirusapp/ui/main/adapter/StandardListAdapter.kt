@@ -75,28 +75,41 @@ class StandardListAdapter(
             holder.bind(list[position] as StatewiseResult)
     }
 
-    fun search(query: String) {
+    fun search(query: String,isCountry:Boolean) {
         list.clear()
         this.list.addAll(originalList)
 
         if (query.isNotEmpty()) {
             var index = 0
 
-            while (index < list.size) {
-                val item = list[index]
-                val text = if (item is FavoriteCountry)
-                    item.countryName
-                else
-                    (item as CountryStat).countryName
+            if (isCountry){
+                while (index < list.size) {
+                    val item = list[index]
+                    val text = if (item is FavoriteCountry)
+                        item.countryName
+                    else
+                        (item as CountryStat).countryName
 
-                if (text.toLowerCase().contains(query.toLowerCase()).not()) {
-                    list.removeAt(index)
-                    index--
+                    if (text.toLowerCase().contains(query.toLowerCase()).not()) {
+                        list.removeAt(index)
+                        index--
+                    }
+                    index++
                 }
-                index++
+                listener.logEvent(query)
             }
+            else{
+                while (index < list.size) {
+                    val item = list[index] as StatewiseResult
+                    val text = item.stateName
 
-            listener.logEvent(query)
+                    if (text.toLowerCase().contains(query.toLowerCase()).not()) {
+                        list.removeAt(index)
+                        index--
+                    }
+                    index++
+                }
+            }
         }
 
         notifyDataSetChanged()
