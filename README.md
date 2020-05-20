@@ -17,7 +17,7 @@ Corona Tracker is written in Kotlin and makes use of KTX, Coroutines, Dagger2, R
 
 1. To get started, you will need the API key which you can obtain from <a href="https://rapidapi.com/astsiatsko/api/coronavirus-monitor/endpoints">here</a>.
 
-2. Put this key in Constants.kt file.
+2. Put this key global-level gradle.properties with name `RAPID_API_KEY` and sync the project.
 3. Connect the app with Firebase.
 4. That's it! You're good to go :)
 
