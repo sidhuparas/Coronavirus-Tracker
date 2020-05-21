@@ -10,6 +10,7 @@ import com.parassidhu.coronavirusapp.network.response.*
 import com.parassidhu.coronavirusapp.util.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.util.Log
 
 class MainViewModel @Inject constructor(
     private val repo: MainRepo,
@@ -119,8 +120,11 @@ class MainViewModel @Inject constructor(
             remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isComplete) {
                     val data = remoteConfig.getString(Constants.BANNER_JSON)
-                    if (data.isNotEmpty())
+                    try {
                         _bannerResponse.value = gson.fromJson<BannerResponse>(data).data
+                    } catch (e: Exception) {
+                        Log.e("Banner Error", e.getMessage())
+                    }
                 }
             }
         }
