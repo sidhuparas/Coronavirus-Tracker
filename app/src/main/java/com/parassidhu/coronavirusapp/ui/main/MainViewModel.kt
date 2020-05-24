@@ -97,7 +97,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getStatewiseStats() {
+    private fun getStatewiseStats() {
         viewModelScope.launch {
             val response = repo.getStatewiseStats()
 
@@ -115,7 +115,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBanners() {
+    private fun getBanners() {
         viewModelScope.launch {
             remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
                 if (task.isComplete) {
@@ -123,7 +123,7 @@ class MainViewModel @Inject constructor(
                     try {
                         _bannerResponse.value = gson.fromJson<BannerResponse>(data).data
                     } catch (e: Exception) {
-                        Log.e("Banner Error", e.getMessage())
+                        Log.e("Banner Error", e.message)
                     }
                 }
             }

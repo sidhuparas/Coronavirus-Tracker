@@ -11,27 +11,16 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.parassidhu.coronavirusapp.R
 import com.parassidhu.coronavirusapp.base.BaseFragment
 import com.parassidhu.coronavirusapp.network.response.BaseCountryResponse
+import com.parassidhu.coronavirusapp.network.response.StatewiseResult
 import com.parassidhu.coronavirusapp.ui.main.MainViewModel
 import com.parassidhu.coronavirusapp.ui.main.adapter.StandardListAdapter
-import kotlinx.android.synthetic.main.fragment_india.*
-import androidx.lifecycle.observe
-import com.parassidhu.coronavirusapp.network.response.StatewiseResult
 import com.parassidhu.coronavirusapp.util.*
-import kotlinx.android.synthetic.main.fragment_india.appBarLayout
-import kotlinx.android.synthetic.main.fragment_india.backButton
-import kotlinx.android.synthetic.main.fragment_india.confirmedCount
-import kotlinx.android.synthetic.main.fragment_india.deathCount
-import kotlinx.android.synthetic.main.fragment_india.recoveredCount
-import kotlinx.android.synthetic.main.fragment_india.searchBar
-import kotlinx.android.synthetic.main.fragment_india.searchEditText
-import kotlinx.android.synthetic.main.fragment_india.searchImageView
-import kotlinx.android.synthetic.main.fragment_india.shimmerLoading
-import kotlinx.android.synthetic.main.fragment_overview.*
+import kotlinx.android.synthetic.main.fragment_india.*
 
 class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
 
@@ -74,7 +63,7 @@ class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
         }
 
         searchEditText.doAfterTextChanged { text: Editable? ->
-            listAdapter.search(text.toString(),false)
+            listAdapter.search(text.toString(), false)
         }
 
         backButton.setOnClickListener {
@@ -93,7 +82,7 @@ class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
         groupViews.isGone = flag
 
         if (!flag) {
-            listAdapter.search("",false)
+            listAdapter.search("", false)
         }
     }
 

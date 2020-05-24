@@ -75,14 +75,14 @@ class StandardListAdapter(
             holder.bind(list[position] as StatewiseResult)
     }
 
-    fun search(query: String,isCountry:Boolean) {
+    fun search(query: String, isCountry: Boolean) {
         list.clear()
         this.list.addAll(originalList)
 
         if (query.isNotEmpty()) {
             var index = 0
 
-            if (isCountry){
+            if (isCountry) {
                 while (index < list.size) {
                     val item = list[index]
                     val text = if (item is FavoriteCountry)
@@ -97,8 +97,7 @@ class StandardListAdapter(
                     index++
                 }
                 listener.logEvent(query)
-            }
-            else{
+            } else {
                 while (index < list.size) {
                     val item = list[index] as StatewiseResult
                     val text = item.stateName
