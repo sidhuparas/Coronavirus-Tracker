@@ -129,7 +129,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
         }
 
         searchEditText.doAfterTextChanged { text: Editable? ->
-            listAdapter.search(text.toString())
+            listAdapter.search(text.toString(),true)
         }
 
         swipeToRefresh.setOnRefreshListener {
@@ -200,7 +200,7 @@ class OverviewFragment : BaseFragment(), AppBarLayout.OnOffsetChangedListener,
         swipeToRefresh.isEnabled = !flag
 
         if (!flag) {
-            listAdapter.search("")
+            listAdapter.search("",true)
         }
     }
 

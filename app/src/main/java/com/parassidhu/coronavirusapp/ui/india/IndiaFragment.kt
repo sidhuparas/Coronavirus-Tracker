@@ -2,10 +2,14 @@ package com.parassidhu.coronavirusapp.ui.india
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,9 +21,17 @@ import com.parassidhu.coronavirusapp.ui.main.adapter.StandardListAdapter
 import kotlinx.android.synthetic.main.fragment_india.*
 import androidx.lifecycle.observe
 import com.parassidhu.coronavirusapp.network.response.StatewiseResult
-import com.parassidhu.coronavirusapp.util.SortEnum
-import com.parassidhu.coronavirusapp.util.start
-import com.parassidhu.coronavirusapp.util.stop
+import com.parassidhu.coronavirusapp.util.*
+import kotlinx.android.synthetic.main.fragment_india.appBarLayout
+import kotlinx.android.synthetic.main.fragment_india.backButton
+import kotlinx.android.synthetic.main.fragment_india.confirmedCount
+import kotlinx.android.synthetic.main.fragment_india.deathCount
+import kotlinx.android.synthetic.main.fragment_india.recoveredCount
+import kotlinx.android.synthetic.main.fragment_india.searchBar
+import kotlinx.android.synthetic.main.fragment_india.searchEditText
+import kotlinx.android.synthetic.main.fragment_india.searchImageView
+import kotlinx.android.synthetic.main.fragment_india.shimmerLoading
+import kotlinx.android.synthetic.main.fragment_overview.*
 
 class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
 
@@ -53,6 +65,35 @@ class IndiaFragment : BaseFragment(), StandardListAdapter.OnEvent {
                 .setMessage(getString(R.string.thanks_message))
                 .create()
                 .show()
+        }
+
+        searchImageView.setOnClickListener {
+            showSearch(true)
+            runInHandler(200) { showKeyboard(searchEditText, true) }
+            searchEditText.requestFocus()
+        }
+
+        searchEditText.doAfterTextChanged { text: Editable? ->
+            listAdapter.search(text.toString(),false)
+        }
+
+        backButton.setOnClickListener {
+            showSearch(false)
+            showKeyboard(searchEditText, false)
+            searchEditText.setText("")
+        }
+    }
+
+    private fun showSearch(flag: Boolean) {
+        searchBar.isInvisible = !flag
+        backButton.isInvisible = !flag
+        searchImageView.isInvisible = flag
+        tvIndiaStats.isInvisible = flag
+        helpImageView.isInvisible = flag
+        groupViews.isGone = flag
+
+        if (!flag) {
+            listAdapter.search("",false)
         }
     }
 
