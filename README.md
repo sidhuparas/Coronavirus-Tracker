@@ -1,8 +1,11 @@
 # Introduction [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/sidhuparas1234@gmail.com)  [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://github.com/sidhuparas/Coronavirus-Tracker/blob/master/LICENSE)
 Corona Tracker is an Android application which shows worldwide data of confirmed cases, recovered cases and death cases. You can also get country-wise data. The data is provided by <a href="https://rapidapi.com/user/astsiatsko">astsiatsko</a>.
 
+## Dagger Hilt Update
+I did a dependencies upgrade in May 2021 and upgraded the dependency injection framework to Dagger Hilt :tada: Contributions from @Priyansh-Kedia.
+
 ## New Features
-- Offline caching using Room persistance library (injected with Dagger2)
+- Offline caching using Room persistance library (injected with Dagger Hilt)
 - Ability to pin specific countries (also using Room)
 - Statewise data of Indian States (with sorting options)
 - Connected banners with Firebase Remote Config which changes every few seconds
@@ -11,7 +14,7 @@ Corona Tracker is an Android application which shows worldwide data of confirmed
 
 ### **Star :star:  this repo to show your support and it really does matter!** :clap:
 
-Corona Tracker is written in Kotlin and makes use of KTX, Coroutines, Dagger2, Retrofit and MVVM. If you find code issues, feel free to create a new issue or make a PR.
+Corona Tracker is written in Kotlin and makes use of KTX, Coroutines, Dagger Hilt, Retrofit and MVVM. If you find code issues, feel free to create a new issue or make a PR.
 
 # Getting Started
 
