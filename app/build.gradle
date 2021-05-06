@@ -42,7 +42,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "debug"
             buildConfigField("String", "BASE_URL", "\"https://coronavirus-monitor.p.rapidapi.com/\"")
-            buildConfigField("String", "API_KEY", "<RAPID_API_KEY>")
+            buildConfigField("String", "API_KEY", RAPID_API_KEY)
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -125,8 +125,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // Hilt
-    def hilt_version = '2.28-alpha'
-
     implementation "com.google.dagger:hilt-android:${hilt_version}"
     kapt "com.google.dagger:hilt-android-compiler:${hilt_version}"
 }

@@ -1,11 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.32'
+    ext {
+        kotlin_version = '1.4.32'
+        hilt_version = '2.35.1'
+    }
 
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
 
     dependencies {
@@ -19,7 +23,6 @@ buildscript {
         // in the individual module build.gradle files
 
         // hilt
-        def hilt_version = '2.28-alpha'
         classpath "com.google.dagger:hilt-android-gradle-plugin:${hilt_version}"
     }
 }
@@ -28,6 +31,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
 }
 
