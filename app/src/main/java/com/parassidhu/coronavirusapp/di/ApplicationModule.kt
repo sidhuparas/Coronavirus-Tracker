@@ -1,25 +1,21 @@
 package com.parassidhu.coronavirusapp.di
 
-import android.app.Application
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.parassidhu.coronavirusapp.CoronaApp
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-class ApplicationModule(var app: CoronaApp) {
+@InstallIn(SingletonComponent::class)
+class ApplicationModule() {
 
     @Provides
     @Singleton
-    fun provideApp(): Application {
-        return app
-    }
-
-    @Provides
-    @Singleton
-    fun getContext(): Context = app
+    fun getContext(): Context = CoronaApp.instance
 
     @Provides
     @Singleton

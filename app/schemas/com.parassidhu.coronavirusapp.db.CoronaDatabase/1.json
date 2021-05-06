@@ -1,0 +1,102 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "50ce7d39d716e9915365ba182465c98a",
+    "entities": [
+      {
+        "tableName": "country_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryName` TEXT NOT NULL, `totalCases` TEXT NOT NULL, `totalDeaths` TEXT NOT NULL, `totalRecovered` TEXT NOT NULL, `newCases` TEXT NOT NULL, PRIMARY KEY(`countryName`))",
+        "fields": [
+          {
+            "fieldPath": "countryName",
+            "columnName": "countryName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalCases",
+            "columnName": "totalCases",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalDeaths",
+            "columnName": "totalDeaths",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalRecovered",
+            "columnName": "totalRecovered",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "newCases",
+            "columnName": "newCases",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "countryName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "fav_country_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryName` TEXT NOT NULL, `totalCases` TEXT NOT NULL, `totalDeaths` TEXT NOT NULL, `totalRecovered` TEXT NOT NULL, `newCases` TEXT NOT NULL, PRIMARY KEY(`countryName`))",
+        "fields": [
+          {
+            "fieldPath": "countryName",
+            "columnName": "countryName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalCases",
+            "columnName": "totalCases",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalDeaths",
+            "columnName": "totalDeaths",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalRecovered",
+            "columnName": "totalRecovered",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "newCases",
+            "columnName": "newCases",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "countryName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '50ce7d39d716e9915365ba182465c98a')"
+    ]
+  }
+}
